@@ -7,7 +7,7 @@
   register: root_dev
 
 - include: storage.yml
-  with_items: storage
+  with_items: "{{ storage }}"
   when: root_dev.stdout != item.device
 
 - include: consul.yml

@@ -1,0 +1,2 @@
+[cluster]
+10.10.1.77 ansible_user=ubuntu ansible_password=temppwd ansible_become_pass=temppwd

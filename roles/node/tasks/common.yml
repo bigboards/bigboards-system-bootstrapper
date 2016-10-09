@@ -3,9 +3,19 @@
   with_items:
     - "curl"
     - "python-pip"
+    - "python-urllib3"
     - "python-dev"
     - "build-essential"
     - "apt-transport-https"
+
+- name: instal python libraries
+  pip:
+   name: "{{ item }}"
+   state: present
+  with_items:
+    - "pyopenssl"
+    - "ndg-httpsclient"
+    - "pyasn1"
 
 - name: create the bb group
   group:
