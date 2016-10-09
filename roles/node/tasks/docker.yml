@@ -1,0 +1,51 @@
+---
+- name: add the docker apt repository key (without proxy)
+  when: ansible_env.http_proxy is not defined
+  apt_key:
+    url: https://packagecloud.io/bigboards/docker-engine/gpgkey
+    state: present
+
+- name: add the docker apt repository key (with proxy)
+  when: ansible_env.http_proxy is defined
+  apt_key:
+    url: https://packagecloud.io/bigboards/docker-engine/gpgkey
+    state: present
+  environment:
+      http_proxy: $http_proxy
+      https_proxy: $https_proxy
+
+- name: add the docker apt repository
+  apt_repository:
+    repo: 'deb https://packagecloud.io/bigboards/docker-engine/ubuntu/ trusty main'
+    state: present
+
+- name: install the new docker version
+  apt:
+    name: docker-engine=1.12.0-0~trusty
+    update_cache: yes
+    state: present
+
+- name: be sure the docker python bindings are installed
+  pip:
+    name: 'docker-py'
+    state: 'latest'
+
+- name: create the docker data directory
+  file:
+    state: directory
+    path: "{{ docker_data_dir }}"
+    owner: bb
+    group: docker
+    mode: 777
+
+- name: configure the docker daemon
+  lineinfile:
+    dest: /etc/default/docker
+    regexp: '^DOCKER_OPTS='
+    line: "DOCKER_OPTS=\"-s aufs -g {{ docker_data_dir }} -D\""
+
+- name: add the bb user to the docker group
+  user:
+    name: bb
+    groups: docker
+    append: yes

@@ -1,0 +1,31 @@
+---
+- name: create the consul user
+  user:
+    name: consul
+    group: bigboards
+    system: yes
+    state: present
+
+- name: install consul
+  copy:
+    src: "{{ ansible_machine }}/consul"
+    dest: /usr/bin/consul
+    mode: 755
+    owner: consul
+
+- name: create the consul configuration directory
+  file:
+    state: directory
+    path: /etc/consul.d
+    owner: consul
+
+- name: copy the init file
+  copy:
+    src: consul.conf
+    dest: /etc/init/consul.conf
+    owner: consul
+
+- name: make sure consul is started at boot
+  service:
+    name: consul
+    enabled: yes

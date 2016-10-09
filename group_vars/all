@@ -1,0 +1,4 @@
+storage:
+  - { device: /dev/sda, mountpoint: /data/0, markerfilename: sda }
+
+docker_data_dir: /data/0/docker

@@ -1,0 +1,27 @@
+- name: create the filesystem for {{ item.device }}
+  shell: creates=/root/.{{ item.markerfilename }}.initialized mkfs.ext4 {{ item.device }} && touch /root/.{{ item.markerfilename }}.initialized
+
+- name: create the mountpoint {{ item.mountpoint }} for device {{ item.device }}
+  file:
+    state: directory
+    path: {{ item.mountpoint }}
+    owner: bb
+    mode: 777
+
+- name: mount {{ item.device }} to {{ item.mountpoint }}
+  mount:
+    name: "{{ item.mountpoint }}"
+    src: "{{ item.device }}"
+    fstype: ext4
+    opts: "default,noatime,nodiratime,nobootwait"
+    state: present
+    dump: 0
+    passno: 0
+
+- name: change directory permissions for {{ item.device }}
+  file:
+    state: directory
+    path: {{ item.mountpoint }}
+    owner: bb
+    mode: 777
+    recurse: yes

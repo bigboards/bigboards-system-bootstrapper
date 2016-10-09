@@ -1,0 +1,15 @@
+---
+- include: common.yml
+- include: dyndns.yml
+- include: nodejs.yml
+
+- shell: mount |grep " / " | cut -d' ' -f1
+  register: root_dev
+
+- include: storage.yml
+  with_items: storage
+  when: root_dev.stdout != item.device
+
+- include: consul.yml
+- include: docker.yml
+

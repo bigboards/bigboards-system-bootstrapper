@@ -1,0 +1,21 @@
+- name: install mandatory tooling
+  apt: name="{{ item }}" state="present"
+  with_items:
+    - "curl"
+    - "python-pip"
+    - "python-dev"
+    - "build-essential"
+    - "apt-transport-https"
+
+- name: create the bb group
+  group:
+    name: bigboards
+    system: yes
+    state: present
+
+- name: create the bb user
+  user:
+    name: bb
+    group: bigboards
+    system: yes
+    state: present
